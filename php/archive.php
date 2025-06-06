@@ -69,6 +69,13 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
 
     <h1>Архивирай страница</h1>
 
+     <p style="text-align: right;">
+        <a href="profile.php">
+            <button style="font-size: 14px; padding: 5px 10px;">Профил</button>
+        </a>
+    </p>
+
+
     <form method="post" action="archive.php">
         <label for="url">Въведете URL:</label>
         <input type="text" name="url" id="url" required style="width: 400px;">
