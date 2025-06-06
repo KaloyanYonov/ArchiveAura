@@ -18,11 +18,11 @@ if (isset($_SESSION['user_id'])) {
 <body>
 
     <a href="login.php">
-        <button style="font-size: 20px; padding: 10px 20px;">Вход</button>
+        <button>Вход</button>
     </a>
 
     <a href="register.php">
-        <button style="font-size: 20px; padding: 10px 20px;">Регистрация</button>
+        <button>Регистрация</button>
     </a>
 
     <p><a href="../index.php">⬅️ Обратно към началната страница</a></p>

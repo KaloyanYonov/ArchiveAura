@@ -45,7 +45,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         <button type="submit">Влез</button>
     </form>
 
-    <p id="login-error" style="color: red;"></p>
+    <p id="login-error"></p>
 
 
     <p><strong><?php echo htmlspecialchars($message); ?></strong></p>

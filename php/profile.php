@@ -23,13 +23,13 @@ if (!isset($_SESSION['user_id'])) {
 
     <p>
         <a href="history.php">
-            <button style="font-size: 14px; padding: 5px 10px;">История на архивите</button>
+            <button>История на архивите</button>
         </a>
     </p>
 
     <p>
         <a href="logout.php">
-            <button style="font-size: 14px; padding: 5px 10px;">Изход</button>
+            <button>Изход</button>
         </a>
     </p>
 

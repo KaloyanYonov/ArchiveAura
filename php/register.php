@@ -42,7 +42,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         <button type="submit">Регистрирай ме</button>
     </form>
 
-    <p id="register-error" style="color: red;"></p>
+    <p id="register-error"></p>
 
     <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
 

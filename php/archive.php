@@ -69,18 +69,22 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
 
     <h1>Архивирай страница</h1>
 
-     <p style="text-align: right;">
+    <p>
         <a href="profile.php">
-            <button style="font-size: 14px; padding: 5px 10px;">Профил</button>
+            <button>Профил</button>
         </a>
     </p>
 
 
-    <form method="post" action="archive.php">
+    <form method="post" action="archive.php" onsubmit="return validateURL();">
         <label for="url">Въведете URL:</label>
-        <input type="text" name="url" id="url" required style="width: 400px;">
+        <input type="text" name="url" id="url" required>
         <button type="submit">Архивирай</button>
     </form>
+
+    <p id="url-error"></p>
+
+    <script src="../js/archive.js"></script>
 
     <?php if (!empty($message)): ?>
         <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
@@ -90,6 +94,8 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
         <h2>Резултат:</h2>
         <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
     <?php endif; ?>
+
+
 
     <p><a href="../index.php">⬅️ Обратно към началната страница</a></p>
 
