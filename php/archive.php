@@ -66,25 +66,31 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
 </head>
 
 <body>
+    <button id = "hideBtn">X</button>
 
-    <h1>Архивирай страница</h1>
+    <div id="form-container">
 
-    <p>
-        <a href="profile.php">
-            <button>Профил</button>
-        </a>
-    </p>
+        <h1>Архивирай страница</h1>
 
+        <p>
+            <a href="profile.php">
+                <button>Профил</button>
+            </a>
+        </p>
 
-    <form method="post" action="archive.php" onsubmit="return validateURL();">
-        <label for="url">Въведете URL:</label>
-        <input type="text" name="url" id="url" required>
-        <button type="submit">Архивирай</button>
-    </form>
+        <button id="dark-mode">Switch to Dark mode</button>
+        <form method="post" action="archive.php" onsubmit="return validateURL();">
+            <label for="url">Въведете URL:</label>
+            <input type="text" name="url" id="url" required>
+            <button type="submit">Архивирай</button>
+        </form>
+    </div>
+
 
     <p id="url-error"></p>
 
     <script src="../js/archive.js"></script>
+    <script src="../js/containerFunc.js"></script>
 
     <?php if (!empty($message)): ?>
         <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
