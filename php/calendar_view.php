@@ -31,6 +31,8 @@ foreach ($results as $row) {
     <meta charset="UTF-8">
     <title>Календар на архивите: <?php echo $year; ?></title>
     <link rel="stylesheet" href="../styles/calendar_style.css">
+    <link rel="stylesheet" href="../styles/global.css">
+
 </head>
 <body>
 

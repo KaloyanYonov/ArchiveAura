@@ -51,18 +51,7 @@ p {
     transform: scale(1.05);
 }
 
-.link {
-    margin-top: 10px;
-    display: inline-block;
-    color: #7de0d2;
-    text-decoration: none;
-    transition: color 0.3s;
-    font-size: 0.95em;
-}
 
-.link:hover {
-    color: #affff7;
-}
 
 @keyframes fadeInUp {
     from {

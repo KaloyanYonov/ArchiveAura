@@ -2,24 +2,30 @@ const container = document.getElementById("form-container");
 const darkModeBtn = document.getElementById("dark-mode");
 const hideBtn = document.getElementById("hideBtn");
 
-let mode = "normal"; 
+let mode = "normal";
 let isCollapsed = false;
 
 darkModeBtn.addEventListener("click", function () {
     if (mode === "normal") {
-        document.body.style.background = "#0a2f2f";
-        document.body.style.color = "#e0f7fa";
-        darkModeBtn.textContent = "☀️ Light Mode";
+        // 🌙 Dark Mode (по-тъмен фон, светъл текст)
+        document.body.style.background = "#0d1117";
+        document.body.style.color = "#c9d1d9";
+        container.style.backgroundColor = "rgba(255, 255, 255, 0.03)";
+        darkModeBtn.textContent = "☀️ Светъл режим";
         mode = "dark";
     } else if (mode === "dark") {
-        document.body.style.background = "#f0f0f0";
-        document.body.style.color = "#1e1e1e";
-        darkModeBtn.textContent = "🔁 Normal Mode";
+        // ☁️ Light Mode (сив фон, тъмен текст)
+        document.body.style.background = "#eeeeee";
+        document.body.style.color = "#222222";
+        container.style.backgroundColor = "#ffffff";
+        darkModeBtn.textContent = "🔁 Нормален режим";
         mode = "light";
     } else {
+        // 🌊 Normal Mode (твоят оригинален фон)
         document.body.style.background = "linear-gradient(145deg, #0a2f2f, #0f3d3d)";
         document.body.style.color = "#e0f7fa";
-        darkModeBtn.textContent = "🌙 Dark Mode";
+        container.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
+        darkModeBtn.textContent = "🌙 Тъмен режим";
         mode = "normal";
     }
 });
@@ -29,7 +35,7 @@ hideBtn.addEventListener("click", function () {
         container.style.maxHeight = "0px";
         container.style.overflow = "hidden";
         container.style.transition = "max-height 0.5s ease";
-        hideBtn.textContent = "▼ Show";
+        hideBtn.textContent = "▼ Покажи";
         isCollapsed = true;
     } else {
         container.style.maxHeight = "500px";

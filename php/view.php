@@ -56,20 +56,27 @@ if (isset($_GET['capture_id']) && is_numeric($_GET['capture_id'])) {
 <head>
     <meta charset="UTF-8">
     <title>Преглед на архив</title>
+    <link rel="stylesheet" href="../styles/view_style.css">
+    <link rel="stylesheet" href="../styles/global.css">
+
 </head>
 
 <body>
 
-    <h1>Преглед на архив</h1>
+<div class="container">
+    <h1>📄 Преглед на архив</h1>
 
     <?php if ($iframe_src && file_exists(__DIR__ . "/$iframe_src")): ?>
-        <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
+        <div class="frame-wrapper">
+            <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
+        </div>
     <?php else: ?>
-        <p><strong>Грешка: Не беше намерен HTML файл за показване.</strong></p>
+        <p class="error-msg"><strong>❌ Грешка:</strong> Не беше намерен HTML файл за показване.</p>
     <?php endif; ?>
 
-    <p><a href="history.php">⬅️ Обратно към историята</a></p>
+    <p class="link"><a href="history.php">⬅️ Обратно към историята</a></p>
+</div>
 
 </body>
-
 </html>
+

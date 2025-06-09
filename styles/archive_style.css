@@ -1,0 +1,153 @@
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(145deg, #0a2f2f, #0f3d3d);
+    color: #e0f7fa;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 255, 230, 0.08);
+    max-width: 600px;
+    margin: auto;
+    animation: fadeInUp 0.6s ease;
+}
+
+h1 {
+    text-align: center;
+    color: #a5f3eb;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+label {
+    font-weight: bold;
+    color: #cffaf4;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background-color: #173c3c;
+    color: #e0f7fa;
+    outline: none;
+}
+
+button, .btn {
+    background-color: #145b5b;
+    color: #e0f7fa;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+button:hover, .btn:hover {
+    background-color: #1c6f6f;
+    transform: scale(1.03);
+}
+
+.btn-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.error-msg {
+    color: #ffaaaa;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.feedback {
+    text-align: center;
+    font-size: 0.95em;
+    margin-top: 10px;
+}
+
+.result-title {
+    text-align: center;
+    margin-top: 40px;
+    color: #affff7;
+}
+
+
+.close-btn {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    font-size: 18px;
+    padding: 6px 12px;
+    background-color: #883d3d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+    background-color: #a84d4d;
+}
+
+.link {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.link a {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #00ffe5;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.link a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #00ffe5;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.link a:hover {
+    color: #affff7;
+}
+
+.link a:hover::after {
+    transform: scaleX(1);
+}
+
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

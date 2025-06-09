@@ -14,6 +14,8 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <title>Моят профил</title>
     <link rel="stylesheet" href="../styles/profile_style.css">
+    <link rel="stylesheet" href="../styles/global.css">
+
 </head>
 
 <body>

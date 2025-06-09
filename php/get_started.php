@@ -13,6 +13,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <title>Изберете действие</title>
     <link rel="stylesheet" href="../styles/choose_style.css">
+    <link rel="stylesheet" href="../styles/global.css">
 </head>
 <body>
 

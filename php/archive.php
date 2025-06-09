@@ -109,37 +109,45 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
 <head>
     <meta charset="UTF-8">
     <title>Архивиране</title>
+    <link rel="stylesheet" href="../styles/archive_style.css">
+    <link rel="stylesheet" href="../styles/global.css">
+
 </head>
 <body>
-    <button id="hideBtn">X</button>
 
-    <div id="form-container">
-        <h1>Архивирай страница</h1>
+    <button id="hideBtn" class="close-btn">X</button>
 
-        <p><a href="profile.php"><button>Профил</button></a></p>
-        <button id="dark-mode">Switch to Dark mode</button>
+    <div id="form-container" class="container">
+        <h1>📥 Архивирай страница</h1>
+
+        <div class="btn-row">
+            <a href="profile.php" class="btn">👤 Профил</a>
+            <button id="dark-mode" class="btn">🌗 Тъмен режим</button>
+        </div>
 
         <form method="post" action="archive.php" onsubmit="return validateURL();">
             <label for="url">Въведете URL:</label>
             <input type="text" name="url" id="url" required>
-            <button type="submit">Архивирай</button>
+            <button type="submit" class="btn">Архивирай</button>
         </form>
     </div>
 
-    <p id="url-error"></p>
+    <p id="url-error" class="error-msg"></p>
 
     <script src="../js/archive.js"></script>
-    <script src="../js/containerFunc.js"></script>
+    <script src="../js/containerLogic.js"></script>
 
     <?php if (!empty($message)): ?>
-        <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
+        <p class="feedback"><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
 
     <?php if (isset($iframe_src)): ?>
-        <h2>Резултат:</h2>
+        <h2 class="result-title">Резултат:</h2>
         <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
     <?php endif; ?>
 
-    <p><a href="../index.php">⬅️ Обратно към началната страница</a></p>
+    <p class="link"><a href="../index.php">⬅️ Обратно към началната страница</a></p>
+
 </body>
 </html>
+

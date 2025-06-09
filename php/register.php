@@ -26,6 +26,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     <meta charset="UTF-8">
     <title>Регистрация</title>
     <link rel="stylesheet" href="../styles/form_styles.css">
+    <link rel="stylesheet" href="../styles/global.css">
+
 </head>
 <body>
 

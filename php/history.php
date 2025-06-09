@@ -22,6 +22,8 @@ $captures = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../styles/history.css">
+    <link rel="stylesheet" href="../styles/global.css">
+
     <title>История на архивите</title>
 </head>
 <body>
