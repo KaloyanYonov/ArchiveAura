@@ -1,0 +1,109 @@
+body {
+    background: linear-gradient(145deg, #0a2f2f, #0f3d3d);
+    color: #e0f7fa;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 20px;
+    font-size: 14px;
+}
+
+h1 {
+    text-align: center;
+    color: #a5f3eb;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.year-switch {
+    text-align: center;
+    margin: 16px 0;
+    font-size: 14px;
+}
+
+.year-switch a {
+    color: #7de0d2;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.year-switch a:hover {
+    color: #affff7;
+}
+
+.year-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 10px;
+}
+
+.month {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 8px;
+    animation: fadeInUp 0.6s ease;
+}
+
+.month h2 {
+    text-align: center;
+    color: #cffaf4;
+    font-size: 16px;
+    margin: 6px 0;
+}
+
+table.calendar {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.calendar th, table.calendar td {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 14.28%;
+    height: 50px;
+    text-align: left;
+    padding: 3px;
+    vertical-align: top;
+    transition: background-color 0.3s ease;
+    font-size: 12px;
+}
+
+.active-day {
+    background-color: #145b5b;
+    border-left: 3px solid #00ffe5;
+}
+
+.today {
+    border: 2px solid #ffffff;
+}
+
+a {
+    color: #00ffe5;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

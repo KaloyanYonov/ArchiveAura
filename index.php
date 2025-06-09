@@ -4,7 +4,7 @@
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/style2.css">
     <title>ArchiveAura</title>
 </head>
 

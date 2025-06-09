@@ -22,7 +22,7 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
         $archive_subdir = $archives_dir . $timestamp;
         mkdir($archive_subdir, 0777, true);
 
-        $wget_path = '/bin/wget';
+        $wget_path = 'C:/xampp/wget/wget.exe';
         $cmd = "\"$wget_path\" --mirror --convert-links --adjust-extension --page-requisites --no-parent -P " . escapeshellarg($archive_subdir) . " " . $url;
 
         exec($cmd . " 2>&1", $output, $return_var);
@@ -47,7 +47,7 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
             $message = "Архивирането беше успешно!";
         } else {
             // ✅ Fallback to first .html found recursively
-            $base_dir = __DIR__ . "/../archives/$timestamp/$host";
+            $base_dir = __DIR__ . "../archives/$timestamp/$host";
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($base_dir));
             $html_file_found = false;
 

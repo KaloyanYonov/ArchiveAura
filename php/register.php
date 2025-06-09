@@ -13,44 +13,42 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     try {
         $stmt = $pdo->prepare("INSERT INTO users (email, password_hash) VALUES (?, ?)");
         $stmt->execute([$email, $password_hash]);
-        $message = "Успешна регистрация! Вече можете да влезете.";
+        $message = "✅ Успешна регистрация! Вече можете да влезете.";
     } catch (PDOException $e) {
-        $message = "Грешка при регистрация: " . $e->getMessage();
+        $message = "❌ Грешка при регистрация: " . $e->getMessage();
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="bg">
-
 <head>
     <meta charset="UTF-8">
     <title>Регистрация</title>
+    <link rel="stylesheet" href="../styles/form_styles.css">
 </head>
-
 <body>
 
-    <h1>Регистрация</h1>
+<div class="form-container">
+    <h1>📝 Регистрация</h1>
 
     <form method="post" action="register.php" onsubmit="return validateRegister();">
         <label for="email">Email:</label>
-        <input name="email" id="email" ><br>
+        <input name="email" id="email" type="email" required>
 
         <label for="password">Парола:</label>
-        <input type="password" name="password" id="password" ><br>
+        <input type="password" name="password" id="password" required>
 
         <button type="submit">Регистрирай ме</button>
     </form>
 
-    <p id="register-error"></p>
+    <p id="register-error" class="error"></p>
+    <p class="feedback"><?php echo htmlspecialchars($message); ?></p>
 
-    <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
+    <p><a href="../index.php" class="link">⬅️ Начална страница</a></p>
+</div>
 
-    <p><a href="../index.php">⬅️ Начална страница</a></p>
-
-    <script src="../js/register.js"></script>
-
+<script src="../js/register.js"></script>
 
 </body>
-
 </html>

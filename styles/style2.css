@@ -1,9 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #072f40;
-    color: #f0f0f0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(145deg, #0a2f2f, #0f3d3d);
+    color: #e0f7fa;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,33 +13,38 @@ body {
 
 .container {
     text-align: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 40px 50px;
+    border-radius: 14px;
+    box-shadow: 0 0 12px rgba(0, 255, 230, 0.08);
     animation: fadeIn 1s ease-in-out;
 }
 
 h1 {
-    font-size: 3em;
-    margin-bottom: 40px;
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    color: #a5f3eb;
     opacity: 0;
     animation: fadeInUp 1s forwards;
 }
 
 .btn {
     display: inline-block;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    color: #fff;
-    background-color: #1e824c; 
+    padding: 14px 28px;
+    font-size: 1.1em;
+    color: #e0f7fa;
+    background-color: #145b5b;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     opacity: 0;
-    animation: fadeInUp 1s forwards 0.5s;
+    animation: fadeInUp 1s forwards 0.4s;
 }
 
 .btn:hover {
-    background-color: #27ae60;
+    background-color: #1c6f6f;
     transform: scale(1.05);
 }
 

@@ -25,36 +25,33 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 
 <!DOCTYPE html>
 <html lang="bg">
-
 <head>
     <meta charset="UTF-8">
     <title>Вход</title>
+    <link rel="stylesheet" href="../styles/form_styles.css">
 </head>
-
 <body>
 
-    <h1>Вход</h1>
+<div class="form-container">
+    <h1>🔐 Вход</h1>
 
     <form method="post" action="login.php" onsubmit="return validateLogin();">
         <label for="email">Email:</label>
-        <input name="email" id="email"><br>
+        <input name="email" id="email" type="email" required>
 
         <label for="password">Парола:</label>
-        <input type="password" name="password" id="password"><br>
+        <input type="password" name="password" id="password" required>
 
         <button type="submit">Влез</button>
     </form>
 
-    <p id="login-error"></p>
+    <p id="login-error" class="error"></p>
+    <p class="feedback"><?php echo htmlspecialchars($message); ?></p>
 
+    <p><a href="../index.php" class="link">⬅️ Начална страница</a></p>
+</div>
 
-    <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
-
-    <p><a href="../index.php">⬅️ Начална страница</a></p>
-
-    <script src="../js/login.js"></script>
-
+<script src="../js/login.js"></script>
 
 </body>
-
 </html>
