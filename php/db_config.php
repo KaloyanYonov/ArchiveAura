@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'archive_aura'; 
+$dbname = 'web_archiver'; 
 $user = 'root'; 
 $pass = '';    
 

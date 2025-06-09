@@ -1,0 +1,36 @@
+-- Create database
+CREATE DATABASE IF NOT EXISTS web_archiver DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+USE web_archiver;
+
+-- USERS TABLE
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert anonymous user
+INSERT IGNORE INTO users (id, email, password_hash)
+VALUES (1, 'anonymous@web-archiver.app', '');
+
+-- PAGES TABLE
+CREATE TABLE IF NOT EXISTS pages (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    url TEXT NOT NULL UNIQUE,
+    first_capture DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_capture DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total_captures INT DEFAULT 0
+);
+
+-- CAPTURES TABLE → FIXED
+CREATE TABLE IF NOT EXISTS captures (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    page_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL,
+    saved_path TEXT NOT NULL,
+    captured_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
