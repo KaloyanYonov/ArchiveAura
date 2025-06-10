@@ -6,6 +6,108 @@ body {
     color: #e0f7fa;
 }
 
+.form-wrap input[type="text"] {
+    width: 300px;
+}
+
+.feedback {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+    font-size: 0.95em;
+    color: #cffaf4;
+}
+
+.floating-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+#calendarModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+#calendarBox {
+    background: #102f2f;
+    color: #e0f7fa;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar td,
+.calendar th {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    vertical-align: top;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.calendar td ul {
+    margin: 4px 0 0;
+    padding-left: 15px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.toolbar,
+.form-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.feedback-msg {
+    color: #cffaf4;
+    font-size: 0.9em;
+    margin-top: 4px;
+    margin-left: 4px;
+}
+
+.stats-box {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.85em;
+    margin-top: 6px;
+    color: #9fe5d8;
+}
+
+.floating-toggle {
+    margin-left: auto;
+    margin-top: 4px;
+}
+
 .container {
     background-color: rgba(255, 255, 255, 0.05);
     padding: 30px 40px;
@@ -42,11 +144,13 @@ input[type="text"] {
     outline: none;
 }
 
-button, .btn {
+button,
+.btn {
     background-color: #145b5b;
     color: #e0f7fa;
     border: none;
-    padding: 12px 20px;
+    padding: 4px 4px;
+    margin-bottom: 20px;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
@@ -56,7 +160,8 @@ button, .btn {
     text-align: center;
 }
 
-button:hover, .btn:hover {
+button:hover,
+.btn:hover {
     background-color: #1c6f6f;
     transform: scale(1.03);
 }
@@ -70,12 +175,6 @@ button:hover, .btn:hover {
 .error-msg {
     color: #ffaaaa;
     text-align: center;
-    margin-top: 10px;
-}
-
-.feedback {
-    text-align: center;
-    font-size: 0.95em;
     margin-top: 10px;
 }
 
@@ -146,6 +245,7 @@ button:hover, .btn:hover {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

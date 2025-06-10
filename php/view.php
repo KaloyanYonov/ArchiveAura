@@ -73,8 +73,6 @@ if (isset($_GET['capture_id']) && is_numeric($_GET['capture_id'])) {
     <?php else: ?>
         <p class="error-msg"><strong>❌ Грешка:</strong> Не беше намерен HTML файл за показване.</p>
     <?php endif; ?>
-
-    <p class="link"><a href="history.php">⬅️ Обратно към историята</a></p>
 </div>
 
 </body>
