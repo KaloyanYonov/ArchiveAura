@@ -9,19 +9,16 @@ darkModeBtn.addEventListener("click", function () {
     if (mode === "normal") {
         document.body.style.background = "#0d1117";
         document.body.style.color = "#c9d1d9";
-        container.style.backgroundColor = "rgba(255, 255, 255, 0.03)";
         darkModeBtn.textContent = "☀️ Светъл режим";
         mode = "dark";
     } else if (mode === "dark") {
         document.body.style.background = "#eeeeee";
         document.body.style.color = "#222222";
-        container.style.backgroundColor = "#ffffff";
         darkModeBtn.textContent = "🔁 Нормален режим";
         mode = "light";
     } else {
         document.body.style.background = "linear-gradient(145deg, #0a2f2f, #0f3d3d)";
         document.body.style.color = "#e0f7fa";
-        container.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
         darkModeBtn.textContent = "🌙 Тъмен режим";
         mode = "normal";
     }

@@ -1,9 +1,7 @@
--- Create database
 CREATE DATABASE IF NOT EXISTS web_archiver DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 USE web_archiver;
 
--- USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -11,11 +9,9 @@ CREATE TABLE IF NOT EXISTS users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert anonymous user
 INSERT IGNORE INTO users (id, email, password_hash)
 VALUES (1, 'anonymous@web-archiver.app', '');
 
--- PAGES TABLE
 CREATE TABLE IF NOT EXISTS pages (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     url TEXT NOT NULL UNIQUE,
@@ -24,13 +20,25 @@ CREATE TABLE IF NOT EXISTS pages (
     total_captures INT DEFAULT 0
 );
 
--- CAPTURES TABLE → FIXED
 CREATE TABLE IF NOT EXISTS captures (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     page_id INT UNSIGNED NOT NULL,
     user_id INT UNSIGNED NOT NULL,
     saved_path TEXT NOT NULL,
     captured_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_public BOOLEAN DEFAULT FALSE,
+    content_hash CHAR(64),
     FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS shared_captures (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    capture_id INT UNSIGNED NOT NULL,
+    shared_by INT UNSIGNED NOT NULL,
+    shared_with INT UNSIGNED NOT NULL,
+    shared_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (capture_id) REFERENCES captures(id) ON DELETE CASCADE,
+    FOREIGN KEY (shared_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (shared_with) REFERENCES users(id) ON DELETE CASCADE
 );

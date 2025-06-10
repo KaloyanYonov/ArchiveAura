@@ -15,7 +15,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['email'] = $user['email'];
-        header("Location: ../index.php");
+        header("Location: archive.php");
         exit;
     } else {
         $message = "Грешен email или парола!";
@@ -49,8 +49,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 
     <p id="login-error" class="error"></p>
     <p class="feedback"><?php echo htmlspecialchars($message); ?></p>
-
-    <p><a href="../index.php" class="link">⬅️ Начална страница</a></p>
+    <p><a href="archive.php" class="btn">⬅️ Обратно</a></p>
 </div>
 
 <script src="../js/login.js"></script>

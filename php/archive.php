@@ -2,7 +2,6 @@
 session_start();
 require_once "db_config.php";
 
-// ✅ Ensure archives/ directory exists
 $archives_dir = __DIR__ . '/../archives';
 if (!is_dir($archives_dir)) {
     mkdir($archives_dir, 0777, true);
@@ -11,18 +10,23 @@ $archives_dir = realpath($archives_dir) . '/';
 
 $user_id = $_SESSION['user_id'] ?? 1;
 $message = '';
+$new_capture = false;
+
+$username = 'Потребител';
+if (isset($_SESSION['email'])) {
+    $username = explode('@', $_SESSION['email'])[0];
+}
 
 if (isset($_POST['url']) && !empty($_POST['url'])) {
     $url_input = trim($_POST['url']);
 
     if (preg_match('/^https?:\/\//', $url_input)) {
         $url = escapeshellarg($url_input);
-
         $timestamp = time();
         $archive_subdir = $archives_dir . $timestamp;
         mkdir($archive_subdir, 0777, true);
 
-        $wget_path = 'C:/xampp/wget/wget.exe';
+        $wget_path = '/bin/wget';
         $cmd = "\"$wget_path\" --mirror --convert-links --adjust-extension --page-requisites --no-parent -P " . escapeshellarg($archive_subdir) . " " . $url;
 
         exec($cmd . " 2>&1", $output, $return_var);
@@ -30,124 +34,154 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
         $host = parse_url($url_input, PHP_URL_HOST);
         $path = parse_url($url_input, PHP_URL_PATH);
 
-        if ($path == '' || $path == '/') {
-            $page_file = "index.html";
-            $page_path = "../archives/$timestamp/$host/$page_file";
-        } else {
-            $safe_path = ltrim($path, '/');
-            $safe_path = rtrim($safe_path, '/');
-            $page_file = $safe_path . ".html";
-            $page_path = "../archives/$timestamp/$host/$safe_path.html";
-        }
+        $safe_path = trim($path, '/') ?: 'index';
+        $page_file = $safe_path . ".html";
+        $page_path = "../archives/$timestamp/$host/$page_file";
+        $full_page_path = __DIR__ . "/../archives/$timestamp/$host/$page_file";
 
-        $full_page_path = __DIR__ . "/../archives/$timestamp/$host/" . $page_file;
-
-        if (file_exists($full_page_path)) {
-            $iframe_src = $page_path;
-            $message = "Архивирането беше успешно!";
-        } else {
-            // ✅ Fallback to first .html found recursively
-            $base_dir = __DIR__ . "../archives/$timestamp/$host";
+        if (!file_exists($full_page_path)) {
+            $base_dir = __DIR__ . "/../archives/$timestamp/$host";
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($base_dir));
-            $html_file_found = false;
-
             foreach ($iterator as $file) {
                 if (pathinfo($file, PATHINFO_EXTENSION) === 'html') {
                     $relative_path = str_replace(realpath(__DIR__ . "/..") . DIRECTORY_SEPARATOR, "../", $file);
                     $iframe_src = $relative_path;
-                    $html_file_found = true;
+                    $message = "Архивирането беше успешно! (fallback)";
                     break;
                 }
             }
-
-            if ($html_file_found) {
-                $message = "Архивирането беше успешно! (fallback)";
-            } else {
-                $message = "Грешка: Не беше намерен HTML файл. Може би сайтът не позволява архивиране с wget.";
-            }
+        } else {
+            $iframe_src = $page_path;
+            $message = "Архивирането беше успешно!";
         }
 
-        // ✅ DB logic (only if something was saved)
-        if (isset($iframe_src) && !empty($iframe_src)) {
+        if (isset($iframe_src) && file_exists($full_page_path)) {
             try {
                 $stmt = $pdo->prepare("SELECT id FROM pages WHERE url = ?");
-                $stmt->execute([trim($_POST['url'])]);
+                $stmt->execute([$url_input]);
                 $page = $stmt->fetch();
 
                 if ($page) {
                     $page_id = $page['id'];
-
-                    if ($user_id == 1) {
-                        $pdo->prepare("UPDATE pages SET last_capture = NOW(), total_captures = total_captures + 1 WHERE id = ?")
-                            ->execute([$page_id]);
-                    } else {
-                        $pdo->prepare("UPDATE pages SET last_capture = NOW() WHERE id = ?")
-                            ->execute([$page_id]);
-                    }
+                    $query = ($user_id == 1)
+                        ? "UPDATE pages SET last_capture = NOW(), total_captures = total_captures + 1 WHERE id = ?"
+                        : "UPDATE pages SET last_capture = NOW() WHERE id = ?";
+                    $pdo->prepare($query)->execute([$page_id]);
                 } else {
                     $pdo->prepare("INSERT INTO pages (url, first_capture, last_capture, total_captures) VALUES (?, NOW(), NOW(), ?)")
-                        ->execute([trim($_POST['url']), ($user_id == 1 ? 1 : 0)]);
+                        ->execute([$url_input, ($user_id == 1 ? 1 : 0)]);
                     $page_id = $pdo->lastInsertId();
                 }
 
-                $stmt = $pdo->prepare("INSERT INTO captures (page_id, user_id, saved_path, captured_at) VALUES (?, ?, ?, NOW())");
-                $stmt->execute([$page_id, $user_id, $iframe_src]);
+                $hash = hash_file('sha256', $full_page_path);
+
+                $stmt = $pdo->prepare("SELECT id FROM captures WHERE page_id = ? AND user_id = ? AND content_hash = ?");
+                $stmt->execute([$page_id, $user_id, $hash]);
+                $existing = $stmt->fetch();
+
+                if ($existing) {
+                    $message = "ℹ️ Вече съществува архив с тази страница.";
+                    $new_capture = false;
+                } else {
+                    $stmt = $pdo->prepare("INSERT INTO captures (page_id, user_id, saved_path, captured_at, content_hash) VALUES (?, ?, ?, NOW(), ?)");
+                    $stmt->execute([$page_id, $user_id, $iframe_src, $hash]);
+                    $new_capture = true;
+                }
 
             } catch (PDOException $e) {
-                $message = "Грешка при записване в базата: " . $e->getMessage();
+                $message = "❌ Грешка при записване в базата: " . $e->getMessage();
             }
         }
-
     } else {
         $message = "Моля въведете валиден URL (започващ с http:// или https://)";
+    }
+}
+
+$stats = ["first" => null, "last" => null, "count" => 0];
+if ($new_capture) {
+    $stats_stmt = $pdo->prepare("SELECT MIN(captured_at) AS first, MAX(captured_at) AS last, COUNT(*) AS count FROM captures WHERE user_id = ?");
+    $stats_stmt->execute([$user_id]);
+    if ($row = $stats_stmt->fetch()) {
+        $stats['first'] = $row['first'];
+        $stats['last'] = $row['last'];
+        $stats['count'] = $row['count'];
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <title>Архивиране</title>
     <link rel="stylesheet" href="../styles/archive_style.css">
     <link rel="stylesheet" href="../styles/global.css">
-
 </head>
+
 <body>
+    <div id="toggleContainer" class="floating-toggle">
+        <button id="toggleBar" class="btn">⬆️ Скрий лентата</button>
+    </div>
 
-    <button id="hideBtn" class="close-btn">X</button>
+    <div class="topbar" id="topbar">
 
-    <div id="form-container" class="container">
-        <h1>📥 Архивирай страница</h1>
-
-        <div class="btn-row">
-            <a href="profile.php" class="btn">👤 Профил</a>
+        <!-- Left Section -->
+        <div class="toolbar">
+            <?php if ($user_id != 1): ?>
+                <span class="greeting">👋 Здравей, <?php echo htmlspecialchars($username); ?></span>
+                <a href="logout.php" class="btn">🚪 Изход</a>
+            <?php else: ?>
+                <a href="login.php" class="btn">🔐 Вход</a>
+                <a href="register.php" class="btn">📝 Регистрация</a>
+            <?php endif; ?>
+            <button class="btn" onclick="openCalendar()">📅 Календар</button>
             <button id="dark-mode" class="btn">🌗 Тъмен режим</button>
         </div>
 
-        <form method="post" action="archive.php" onsubmit="return validateURL();">
-            <label for="url">Въведете URL:</label>
-            <input type="text" name="url" id="url" required>
-            <button type="submit" class="btn">Архивирай</button>
-        </form>
+        <!-- Center Section: Archive form -->
+        <div class="form-wrap">
+            <form method="post" action="archive.php" onsubmit="return validateURL();">
+                <input type="text" name="url" id="url" placeholder="Въведи URL за архивиране" required>
+                <button type="submit" class="btn">📥 Архивирай</button>
+            </form>
+
+            <?php if (!empty($message)): ?>
+                <div class="feedback-msg"><?php echo htmlspecialchars($message); ?></div>
+            <?php endif; ?>
+
+            <?php
+            $stats_stmt = $pdo->prepare("SELECT MIN(captured_at) AS first, MAX(captured_at) AS last, COUNT(*) AS count FROM captures WHERE user_id = ?");
+            $stats_stmt->execute([$user_id]);
+            $row = $stats_stmt->fetch();
+
+            if ($row && $row['count'] > 0): ?>
+                <div class="stats-box">
+                    <span>Брой архиви: <strong><?php echo $row['count']; ?></strong></span>
+                    <span><?php echo date("d.m.Y", strtotime($row['first'])); ?> –
+                        <?php echo date("d.m.Y", strtotime($row['last'])); ?></span>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 
-    <p id="url-error" class="error-msg"></p>
+    </div>
 
-    <script src="../js/archive.js"></script>
-    <script src="../js/containerLogic.js"></script>
-
-    <?php if (!empty($message)): ?>
-        <p class="feedback"><?php echo htmlspecialchars($message); ?></p>
-    <?php endif; ?>
+    <div id="calendarModal">
+        <div id="calendarBox">
+            <button class="btn" onclick="closeCalendar()">✖️ Затвори</button>
+            <div id="calendarContent">Зареждане...</div>
+        </div>
+    </div>
 
     <?php if (isset($iframe_src)): ?>
-        <h2 class="result-title">Резултат:</h2>
         <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
     <?php endif; ?>
 
-    <p class="link"><a href="../index.php">⬅️ Обратно към началната страница</a></p>
-
+    <script src="../js/archive.js"></script>
+    <script src="../js/containerLogic.js"></script>
+    <script src="../js/topbarToggle.js"></script>
+    <script src="../js/calendarModal.js"></script>
 </body>
-</html>
 
+</html>
