@@ -1,7 +1,6 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-
 require_once "db_config.php";
 
 $user_id = $_SESSION['user_id'] ?? 1;
@@ -19,7 +18,6 @@ if (!$capture_id) {
     exit;
 }
 
-// Check if user owns the capture
 $stmt = $pdo->prepare("SELECT user_id FROM captures WHERE id = ?");
 $stmt->execute([$capture_id]);
 $row = $stmt->fetch();
@@ -38,17 +36,15 @@ if ($make_public) {
 }
 
 if ($target_email) {
-    // Look up recipient user ID
     $user_stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $user_stmt->execute([$target_email]);
     $recipient = $user_stmt->fetch();
 
     if (!$recipient) {
-        echo json_encode(['error' => 'Не е намерен потребител с този имейл.']);
+        echo json_encode(['error' => 'Потребителят не е намерен.']);
         exit;
     }
 
-    // Check if already shared
     $check = $pdo->prepare("SELECT id FROM shared_captures WHERE capture_id = ? AND shared_with = ?");
     $check->execute([$capture_id, $recipient['id']]);
 

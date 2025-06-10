@@ -9,7 +9,6 @@ $iframe_src = '';
 if (isset($_GET['capture_id']) && is_numeric($_GET['capture_id'])) {
     $capture_id = intval($_GET['capture_id']);
 
-    // Load saved_path for this capture (only if belongs to current user or global)
     $stmt = $pdo->prepare("
         SELECT saved_path
         FROM captures
@@ -21,16 +20,13 @@ if (isset($_GET['capture_id']) && is_numeric($_GET['capture_id'])) {
     if ($capture) {
         $iframe_src = $capture['saved_path'];
 
-        // Check if file exists
         if (!file_exists(__DIR__ . "/$iframe_src")) {
-            // Try fallback → recursively find first .html file in same folder
             $base_dir = dirname(__DIR__ . "/$iframe_src");
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($base_dir));
             $html_file_found = false;
 
             foreach ($iterator as $file) {
                 if (pathinfo($file, PATHINFO_EXTENSION) === 'html') {
-                    // Относителния път
                     $relative_path = str_replace(realpath(__DIR__ . "/..") . DIRECTORY_SEPARATOR, "../", $file);
                     $iframe_src = $relative_path;
                     $html_file_found = true;
@@ -44,7 +40,6 @@ if (isset($_GET['capture_id']) && is_numeric($_GET['capture_id'])) {
         }
 
     } else {
-        // Invalid capture_id or user has no access
         $iframe_src = '';
     }
 }

@@ -15,7 +15,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         $stmt->execute([$email, $password_hash]);
         $message = "✅ Успешна регистрация! Вече можете да влезете.";
     } catch (PDOException $e) {
-        if ($e->getCode() == 23000) { // SQLSTATE code for integrity constraint violation
+        if ($e->getCode() == 23000) { // SQLSTATE code: integrity constraint violation 
             $message = "⚠️ Този имейл вече е регистриран.";
         } else {
             $message = "❌ Възникна грешка при регистрацията. Моля, опитайте отново.";

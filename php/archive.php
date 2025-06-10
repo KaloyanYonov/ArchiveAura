@@ -12,7 +12,6 @@ $user_id = $_SESSION['user_id'] ?? 1;
 $message = '';
 $new_capture = false;
 
-// Determine display name
 $username = 'Потребител';
 if (isset($_SESSION['email'])) {
     $username = explode('@', $_SESSION['email'])[0];
@@ -74,10 +73,8 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
                     $page_id = $pdo->lastInsertId();
                 }
 
-                // ✅ Compute content hash
                 $hash = hash_file('sha256', $full_page_path);
 
-                // ✅ Check for existing capture with same hash for this user and page
                 $stmt = $pdo->prepare("SELECT id FROM captures WHERE page_id = ? AND user_id = ? AND content_hash = ?");
                 $stmt->execute([$page_id, $user_id, $hash]);
                 $existing = $stmt->fetch();
