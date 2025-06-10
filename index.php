@@ -13,7 +13,7 @@
      <div class="container">
         <h1 class="fade-in">Welcome to Web Archiver!</h1>
 
-        <a href="php/get_started.php" class="btn fade-in">
+        <a href="php/archive.php" class="btn fade-in">
             Get Started
         </a>
     </div>

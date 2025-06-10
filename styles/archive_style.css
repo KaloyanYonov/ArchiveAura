@@ -7,7 +7,11 @@ body {
 }
 
 .form-wrap input[type="text"] {
-    width: 300px;
+    width: 100%;
+    max-width: 700px;
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 1rem;
 }
 
 .feedback {
@@ -149,9 +153,10 @@ button,
     background-color: #145b5b;
     color: #e0f7fa;
     border: none;
-    padding: 4px 4px;
+    padding: 5px 15px;
+    font-size: 1.1rem;
     margin-bottom: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
@@ -159,6 +164,7 @@ button,
     display: inline-block;
     text-align: center;
 }
+
 
 button:hover,
 .btn:hover {
@@ -183,7 +189,6 @@ button:hover,
     margin-top: 40px;
     color: #affff7;
 }
-
 
 .close-btn {
     position: fixed;
@@ -250,4 +255,17 @@ button:hover,
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.form-wrap {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+iframe {
+    margin-top: 40px;
+    border: none;
+    box-shadow: 0 0 20px rgba(0, 255, 230, 0.2);
+    border-radius: 12px;
 }

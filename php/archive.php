@@ -27,7 +27,7 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
         $archive_subdir = $archives_dir . $timestamp;
         mkdir($archive_subdir, 0777, true);
 
-        $wget_path = '/bin/wget';
+        $wget_path = 'C:/xampp/wget/wget.exe';
         $cmd = "\"$wget_path\" --mirror --convert-links --adjust-extension --page-requisites --no-parent -P " . escapeshellarg($archive_subdir) . " " . $url;
 
         exec($cmd . " 2>&1", $output, $return_var);
@@ -129,7 +129,6 @@ if ($new_capture) {
 
     <div class="topbar" id="topbar">
 
-        <!-- Left Section -->
         <div class="toolbar">
             <?php if ($user_id != 1): ?>
                 <span class="greeting">👋 Здравей, <?php echo htmlspecialchars($username); ?></span>
@@ -142,7 +141,6 @@ if ($new_capture) {
             <button id="dark-mode" class="btn">🌗 Тъмен режим</button>
         </div>
 
-        <!-- Center Section: Archive form -->
         <div class="form-wrap">
             <form method="post" action="archive.php" onsubmit="return validateURL();">
                 <input type="text" name="url" id="url" placeholder="Въведи URL за архивиране" required>
