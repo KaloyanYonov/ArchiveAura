@@ -26,7 +26,7 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
         $archive_subdir = $archives_dir . $timestamp;
         mkdir($archive_subdir, 0777, true);
 
-        $wget_path = '/bin/wget';
+        $wget_path = 'C:/xampp/wget/wget.exe';
         $cmd = "\"$wget_path\" --mirror --convert-links --adjust-extension --page-requisites --no-parent -P " . escapeshellarg($archive_subdir) . " " . $url;
 
         exec($cmd . " 2>&1", $output, $return_var);
@@ -55,8 +55,9 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
             $message = "Архивирането беше успешно!";
         }
 
-        if (isset($iframe_src) && file_exists($full_page_path)) {
+        if (isset($iframe_src) && file_exists(__DIR__ . "/$iframe_src")) {
             try {
+                // Find or insert into pages
                 $stmt = $pdo->prepare("SELECT id FROM pages WHERE url = ?");
                 $stmt->execute([$url_input]);
                 $page = $stmt->fetch();
@@ -73,8 +74,10 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
                     $page_id = $pdo->lastInsertId();
                 }
 
-                $hash = hash_file('sha256', $full_page_path);
+                // Generate hash of content
+                $hash = hash_file('sha256', __DIR__ . "/$iframe_src");
 
+                // Avoid duplicate capture
                 $stmt = $pdo->prepare("SELECT id FROM captures WHERE page_id = ? AND user_id = ? AND content_hash = ?");
                 $stmt->execute([$page_id, $user_id, $hash]);
                 $existing = $stmt->fetch();
@@ -87,6 +90,7 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
                     $stmt->execute([$page_id, $user_id, $iframe_src, $hash]);
                     $new_capture = true;
                 }
+
 
             } catch (PDOException $e) {
                 $message = "❌ Грешка при записване в базата: " . $e->getMessage();
@@ -111,22 +115,18 @@ if ($new_capture) {
 
 <!DOCTYPE html>
 <html lang="bg">
-
 <head>
     <meta charset="UTF-8">
     <title>Архивиране</title>
     <link rel="stylesheet" href="../styles/archive_style.css">
     <link rel="stylesheet" href="../styles/global.css">
 </head>
-
 <body>
     <div id="toggleContainer" class="floating-toggle">
         <button id="toggleBar" class="btn">⬆️ Скрий лентата</button>
     </div>
 
     <div class="topbar" id="topbar">
-
-        <!-- Left Section -->
         <div class="toolbar">
             <?php if ($user_id != 1): ?>
                 <span class="greeting">👋 Здравей, <?php echo htmlspecialchars($username); ?></span>
@@ -135,11 +135,12 @@ if ($new_capture) {
                 <a href="login.php" class="btn">🔐 Вход</a>
                 <a href="register.php" class="btn">📝 Регистрация</a>
             <?php endif; ?>
-            <button class="btn" onclick="openCalendar()">📅 Календар</button>
-            <button id="dark-mode" class="btn">🌗 Тъмен режим</button>
+            <a class="btn" onclick="openCalendar()">📅 Календар</a>
+            <a id="dark-mode" class="btn">🌗 Тъмен режим</a>
+            <a href="https://github.com/KaloyanYonov" class="btn" target="_blank">Kaloyan's Github</a>
+            <a href="https://github.com/Backpulver" class="btn" target="_blank">Yoan's Github</a>
         </div>
 
-        <!-- Center Section: Archive form -->
         <div class="form-wrap">
             <form method="post" action="archive.php" onsubmit="return validateURL();">
                 <input type="text" name="url" id="url" placeholder="Въведи URL за архивиране" required>
@@ -165,8 +166,6 @@ if ($new_capture) {
         </div>
     </div>
 
-    </div>
-
     <div id="calendarModal">
         <div id="calendarBox">
             <button class="btn" onclick="closeCalendar()">✖️ Затвори</button>
@@ -176,12 +175,15 @@ if ($new_capture) {
 
     <?php if (isset($iframe_src)): ?>
         <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
+        <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
+        <canvas id="screenshotCanvas" style="display: none;"></canvas>
     <?php endif; ?>
 
     <script src="../js/archive.js"></script>
     <script src="../js/containerLogic.js"></script>
     <script src="../js/topbarToggle.js"></script>
     <script src="../js/calendarModal.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="../js/screenshot.js"></script>
 </body>
-
 </html>
