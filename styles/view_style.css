@@ -22,6 +22,28 @@ h1 {
     margin-bottom: 20px;
 }
 
+button,
+.btn {
+    background-color: #145b5b;
+    color: #e0f7fa;
+    border: none;
+    padding: 4px 4px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+button:hover,
+.btn:hover {
+    background-color: #1c6f6f;
+    transform: scale(1.03);
+}
+
 .frame-wrapper {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;

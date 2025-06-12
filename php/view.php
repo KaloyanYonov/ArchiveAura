@@ -17,6 +17,21 @@ if (isset($_GET['capture_id'])) {
     $capture_id = intval($parts[0]);
     $original_url = isset($parts[1]) ? urldecode($parts[1]) : '';
 
+    if (empty($original_url) && isset($capture_id)) {
+        $stmt = $pdo->prepare("
+        SELECT pages.url FROM captures
+        JOIN pages ON captures.page_id = pages.id
+        WHERE captures.id = ? AND captures.user_id = ?
+        LIMIT 1
+    ");
+        $stmt->execute([$capture_id, $user_id]);
+        $result = $stmt->fetch();
+        if ($result) {
+            $original_url = $result['url'];
+        }
+    }
+
+
     if ($original_url) {
         $page_title_slug = $original_url;
     }
@@ -44,31 +59,50 @@ if (isset($_GET['capture_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <title>Преглед на архив</title>
     <link rel="stylesheet" href="../styles/view_style.css">
     <link rel="stylesheet" href="../styles/global.css">
 </head>
+
 <body>
-<div class="container">
-    <h1>📄 Преглед на архив</h1>
+    <div class="container">
+        <h1>📄 Преглед на архив</h1>
 
-    <?php if ($iframe_src && file_exists(__DIR__ . "/$iframe_src")): ?>
-        <div class="frame-wrapper">
-            <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
-        </div>
-    <?php else: ?>
-        <p class="error-msg"><strong>❌ Грешка:</strong> Не беше намерен HTML файл за показване.</p>
-    <?php endif; ?>
+        <?php if ($iframe_src && file_exists(__DIR__ . "/$iframe_src")): ?>
+            <div class="frame-wrapper">
+                <?php
+                function slugify_url($url)
+                {
+                    $parsed = parse_url($url);
+                    $host = $parsed['host'] ?? 'unknown';
+                    $path = $parsed['path'] ?? '';
+                    $slug = $host . $path;
+                    $slug = str_replace(['/', '\\'], '_', $slug);
+                    $slug = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $slug);
+                    return $slug;
+                }
+                $slugified = $original_url ? slugify_url($original_url) : 'capture';
+                ?>
+                <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"
+                    data-filename="<?php echo htmlspecialchars($slugified); ?>">
+                </iframe>
+            </div>
+        <?php else: ?>
 
-    <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
-    <canvas id="screenshotCanvas" style="display: none;"></canvas>
-    <a href="../php/archive.php">⬅️Назад</a>
-</div>
+            <p class="error-msg"><strong>❌ Грешка:</strong> Не беше намерен HTML файл за показване.</p>
+        <?php endif; ?>
+
+        <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
+        <canvas id="screenshotCanvas" style="display: none;"></canvas>
+        <a href="../php/archive.php">⬅️Назад</a>
+    </div>
 
 
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script src="../js/screenshot.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="../js/screenshot.js"></script>
 </body>
+
 </html>

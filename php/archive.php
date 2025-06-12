@@ -113,14 +113,32 @@ if ($new_capture) {
 }
 ?>
 
+<?php
+function slugify_url($url)
+{
+    $parsed = parse_url($url);
+    $host = $parsed['host'] ?? 'unknown';
+    $path = $parsed['path'] ?? '';
+    $slug = $host . $path;
+    $slug = str_replace(['/', '\\'], '_', $slug);
+    $slug = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $slug);
+    return $slug;
+}
+
+$slugified = isset($url_input) ? slugify_url($url_input) : 'capture';
+?>
+
+
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <title>Архивиране</title>
     <link rel="stylesheet" href="../styles/archive_style.css">
     <link rel="stylesheet" href="../styles/global.css">
 </head>
+
 <body>
     <div id="toggleContainer" class="floating-toggle">
         <button id="toggleBar" class="btn">⬆️ Скрий лентата</button>
@@ -174,10 +192,14 @@ if ($new_capture) {
     </div>
 
     <?php if (isset($iframe_src)): ?>
-        <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"></iframe>
+        <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"
+            data-filename="<?php echo htmlspecialchars($slugified); ?>">
+        </iframe>
+
         <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
         <canvas id="screenshotCanvas" style="display: none;"></canvas>
     <?php endif; ?>
+
 
     <script src="../js/archive.js"></script>
     <script src="../js/containerLogic.js"></script>
@@ -186,4 +208,5 @@ if ($new_capture) {
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="../js/screenshot.js"></script>
 </body>
+
 </html>
