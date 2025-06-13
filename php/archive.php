@@ -126,7 +126,6 @@ if ($new_capture) {
 
     <div class="topbar" id="topbar">
 
-        <!-- Left Section -->
         <div class="toolbar">
             <?php if ($user_id != 1): ?>
                 <span class="greeting">👋 Здравей, <?php echo htmlspecialchars($username); ?></span>
@@ -139,7 +138,6 @@ if ($new_capture) {
             <button id="dark-mode" class="btn">🌗 Тъмен режим</button>
         </div>
 
-        <!-- Center Section: Archive form -->
         <div class="form-wrap">
             <form method="post" action="archive.php" onsubmit="return validateURL();">
                 <input type="text" name="url" id="url" placeholder="Въведи URL за архивиране" required>
