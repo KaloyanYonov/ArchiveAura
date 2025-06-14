@@ -11,7 +11,6 @@ $capture_id = null;
 $original_url = '';
 
 if (isset($_GET['capture_id'])) {
-    // Support both capture_id=14 or capture_id=14/https://...
     $raw = $_GET['capture_id'];
     $parts = explode('/', $raw, 2);
     $capture_id = intval($parts[0]);
@@ -69,7 +68,11 @@ if (isset($_GET['capture_id'])) {
 
 <body>
     <div class="container">
-        <h1>📄 Преглед на архив</h1>
+        <h2>📄 Преглед на архив</h2>
+
+        <a href="../php/archive.php">⬅️Назад</a>
+        <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
+        <canvas id="screenshotCanvas" style="display: none;"></canvas>
 
         <?php if ($iframe_src && file_exists(__DIR__ . "/$iframe_src")): ?>
             <div class="frame-wrapper">
@@ -94,10 +97,6 @@ if (isset($_GET['capture_id'])) {
 
             <p class="error-msg"><strong>❌ Грешка:</strong> Не беше намерен HTML файл за показване.</p>
         <?php endif; ?>
-
-        <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
-        <canvas id="screenshotCanvas" style="display: none;"></canvas>
-        <a href="../php/archive.php">⬅️Назад</a>
     </div>
 
 

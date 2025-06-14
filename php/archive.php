@@ -27,7 +27,20 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
         mkdir($archive_subdir, 0777, true);
 
         $wget_path = 'C:/xampp/wget/wget.exe';
-        $cmd = "\"$wget_path\" --mirror --convert-links --adjust-extension --page-requisites --no-parent -P " . escapeshellarg($archive_subdir) . " " . $url;
+        // $wget_path = '/bin/wget';
+
+        $wget_options = "--no-parent --convert-links --adjust-extension --page-requisites";
+
+        if (!empty($_POST['single_page'])) {
+            $wget_options .= " --level=1";
+        }
+
+        if (!empty($_POST['use_cookie']) && !empty($_POST['cookie_value'])) {
+            $cookie_value = trim($_POST['cookie_value']);
+            $wget_options .= " " . escapeshellarg("--header=Cookie: $cookie_value");
+        }
+
+        $cmd = "\"$wget_path\" $wget_options -P " . escapeshellarg($archive_subdir) . " " . $url;
 
         exec($cmd . " 2>&1", $output, $return_var);
 
@@ -57,7 +70,6 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
 
         if (isset($iframe_src) && file_exists(__DIR__ . "/$iframe_src")) {
             try {
-                // Find or insert into pages
                 $stmt = $pdo->prepare("SELECT id FROM pages WHERE url = ?");
                 $stmt->execute([$url_input]);
                 $page = $stmt->fetch();
@@ -74,10 +86,8 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
                     $page_id = $pdo->lastInsertId();
                 }
 
-                // Generate hash of content
                 $hash = hash_file('sha256', __DIR__ . "/$iframe_src");
 
-                // Avoid duplicate capture
                 $stmt = $pdo->prepare("SELECT id FROM captures WHERE page_id = ? AND user_id = ? AND content_hash = ?");
                 $stmt->execute([$page_id, $user_id, $hash]);
                 $existing = $stmt->fetch();
@@ -90,8 +100,6 @@ if (isset($_POST['url']) && !empty($_POST['url'])) {
                     $stmt->execute([$page_id, $user_id, $iframe_src, $hash]);
                     $new_capture = true;
                 }
-
-
             } catch (PDOException $e) {
                 $message = "❌ Грешка при записване в базата: " . $e->getMessage();
             }
@@ -140,68 +148,82 @@ $slugified = isset($url_input) ? slugify_url($url_input) : 'capture';
 </head>
 
 <body>
-    <div id="toggleContainer" class="floating-toggle">
+    <div class="floating-toggle" id="toggleContainer">
         <button id="toggleBar" class="btn">⬆️ Скрий лентата</button>
     </div>
 
-    <div class="topbar" id="topbar">
+    <div class="toolbar" id="topbar">
+        <?php if ($user_id != 1): ?>
+            <span class="greeting">👋 Здравей, <?php echo htmlspecialchars($username); ?></span>
+            <a href="logout.php" class="btn">🚪 Изход</a>
+        <?php else: ?>
+            <a href="login.php" class="btn">🔐 Вход</a>
+            <a href="register.php" class="btn">📝 Регистрация</a>
+        <?php endif; ?>
 
-        <div class="toolbar">
-            <?php if ($user_id != 1): ?>
-                <span class="greeting">👋 Здравей, <?php echo htmlspecialchars($username); ?></span>
-                <a href="logout.php" class="btn">🚪 Изход</a>
-            <?php else: ?>
-                <a href="login.php" class="btn">🔐 Вход</a>
-                <a href="register.php" class="btn">📝 Регистрация</a>
-            <?php endif; ?>
-            <a class="btn" onclick="openCalendar()">📅 Календар</a>
-            <a id="dark-mode" class="btn">🌗 Тъмен режим</a>
-            <a href="https://github.com/KaloyanYonov" class="btn" target="_blank">Kaloyan's Github</a>
-            <a href="https://github.com/Backpulver" class="btn" target="_blank">Yoan's Github</a>
-        </div>
+        <a class="btn" onclick="openCalendar()">📅 Календар</a>
+        <a id="dark-mode" class="btn">🌗 Тъмен режим</a>
 
         <div class="form-wrap">
             <form method="post" action="archive.php" onsubmit="return validateURL();">
-                <input type="text" name="url" id="url" placeholder="Въведи URL за архивиране" required>
-                <button type="submit" class="btn">📥 Архивирай</button>
-            </form>
-
-            <?php if (!empty($message)): ?>
-                <div class="feedback-msg"><?php echo htmlspecialchars($message); ?></div>
-            <?php endif; ?>
-
-            <?php
-            $stats_stmt = $pdo->prepare("SELECT MIN(captured_at) AS first, MAX(captured_at) AS last, COUNT(*) AS count FROM captures WHERE user_id = ?");
-            $stats_stmt->execute([$user_id]);
-            $row = $stats_stmt->fetch();
-
-            if ($row && $row['count'] > 0): ?>
-                <div class="stats-box">
-                    <span>Брой архиви: <strong><?php echo $row['count']; ?></strong></span>
-                    <span><?php echo date("d.m.Y", strtotime($row['first'])); ?> –
-                        <?php echo date("d.m.Y", strtotime($row['last'])); ?></span>
+                <div class="input-row">
+                    <input type="text" name="url" id="url" placeholder="Въведи URL за архивиране" required>
+                    <button type="submit" class="btn">📥 Архивирай</button>
                 </div>
-            <?php endif; ?>
+
+                <div class="options">
+                    <label><input type="checkbox" name="single_page" id="single_page"> Само до дълбочина 1</label><br>
+                    <label><input type="checkbox" name="use_cookie" id="use_cookie"> Използвай cookie</label>
+                    <input type="text" name="cookie_value" id="cookie_value" placeholder="Cookie: ключ=стойност"
+                        style="display:none; margin-top: 6px;">
+                </div>
+
+                <?php if (!empty($message)): ?>
+                    <div class="feedback-msg"><?php echo htmlspecialchars($message); ?></div>
+                <?php endif; ?>
+            </form>
         </div>
+
+        <?php
+        $stats_stmt = $pdo->prepare("SELECT MIN(captured_at) AS first, MAX(captured_at) AS last, COUNT(*) AS count FROM captures WHERE user_id = ?");
+        $stats_stmt->execute([$user_id]);
+        $row = $stats_stmt->fetch();
+
+        if ($row && $row['count'] > 0): ?>
+            <div class="stats-box">
+                <span>Брой архиви: <strong><?php echo $row['count']; ?></strong></span>
+                <span><?php echo date("d.m.Y", strtotime($row['first'])); ?> –
+                    <?php echo date("d.m.Y", strtotime($row['last'])); ?></span>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div id="calendarModal">
         <div id="calendarBox">
-            <button class="btn" onclick="closeCalendar()">✖️ Затвори</button>
+            <button class="btn" id="close-btn" onclick="closeCalendar()">✖️ Затвори</button>
             <div id="calendarContent">Зареждане...</div>
         </div>
     </div>
 
     <?php if (isset($iframe_src)): ?>
+        <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
+        <canvas id="screenshotCanvas" style="display: none;"></canvas>
+
         <iframe src="<?php echo htmlspecialchars($iframe_src); ?>" width="100%" height="800px"
             data-filename="<?php echo htmlspecialchars($slugified); ?>">
         </iframe>
-
-        <button id="screenshotBtn" class="btn">📸 Изтегли като PNG</button>
-        <canvas id="screenshotCanvas" style="display: none;"></canvas>
     <?php endif; ?>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cookieCheckbox = document.getElementById("use_cookie");
+            const cookieInput = document.getElementById("cookie_value");
 
+            cookieCheckbox.addEventListener("change", () => {
+                cookieInput.style.display = cookieCheckbox.checked ? "block" : "none";
+            });
+        });
+    </script>
     <script src="../js/archive.js"></script>
     <script src="../js/containerLogic.js"></script>
     <script src="../js/topbarToggle.js"></script>

@@ -8,6 +8,7 @@ body {
 
 .form-wrap input[type="text"] {
     width: 300px;
+    padding: 6px;
 }
 
 .feedback {
@@ -72,35 +73,42 @@ body {
     padding-left: 15px;
 }
 
-.topbar {
+.toolbar {
     display: flex;
-    justify-content: left;
-    align-items: flex-start;
     flex-wrap: wrap;
-    gap: 16px;
+    align-items: baseline;
+    margin-bottom: 20px;
+    gap: 12px;
 }
 
-.toolbar,
+#topbar.hidden {
+    display: none;
+}
+
+#toggleBar {
+    font-size: revert;
+}
+
 .form-wrap {
     display: flex;
     align-items: center;
     gap: 12px;
-    flex-wrap: wrap;
+}
+
+.options {
+    font-size: 0.9em;
 }
 
 .feedback-msg {
     color: #cffaf4;
     font-size: 0.9em;
-    margin-top: 4px;
-    margin-left: 4px;
+    padding-left: 6px;
 }
 
 .stats-box {
     display: flex;
     flex-direction: column;
-    font-size: 0.85em;
-    margin-top: 6px;
-    color: #9fe5d8;
+    font-size: math;
 }
 
 .floating-toggle {
@@ -124,15 +132,13 @@ h1 {
     margin-bottom: 20px;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
 label {
     font-weight: bold;
     color: #cffaf4;
+}
+
+.greeting {
+    margin-bottom: 20px;
 }
 
 input[type="text"] {
@@ -150,7 +156,6 @@ button,
     color: #e0f7fa;
     border: none;
     padding: 4px 4px;
-    margin-bottom: 20px;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
@@ -158,18 +163,13 @@ button,
     text-decoration: none;
     display: inline-block;
     text-align: center;
+    font-size: unset;
 }
 
 button:hover,
 .btn:hover {
     background-color: #1c6f6f;
     transform: scale(1.03);
-}
-
-.btn-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
 }
 
 .error-msg {
@@ -184,19 +184,8 @@ button:hover,
     color: #affff7;
 }
 
-
-.close-btn {
-    position: fixed;
-    top: 20px;
-    right: 30px;
-    font-size: 18px;
-    padding: 6px 12px;
-    background-color: #883d3d;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+#close-btn {
+    margin-bottom: 10px;
 }
 
 .close-btn:hover {
