@@ -4,16 +4,16 @@
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/style2.css">
     <title>ArchiveAura</title>
 </head>
 
 <body>
 
      <div class="container">
-        <h1 class="fade-in">Welcome to ArchiveAura!</h1>
+        <h1 class="fade-in">Welcome to Web Archiver!</h1>
 
-        <a href="php/getStarted.php" class="btn fade-in">
+        <a href="php/archive.php" class="btn fade-in">
             Get Started
         </a>
     </div>
