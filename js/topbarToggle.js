@@ -1,25 +1,14 @@
-const toggleBtn = document.getElementById("toggleBar");
-const topbar = document.getElementById("topbar");
-const toggleContainer = document.getElementById("toggleContainer");
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("toggleBar");
+    const topbar = document.getElementById("topbar");
 
-function moveToggleInside() {
-    topbar.appendChild(toggleBtn);
-    toggleBtn.innerHTML = "⬆️ Скрий лентата";
-}
+    toggleBtn.addEventListener("click", () => {
+        topbar.classList.toggle("hidden");
 
-function moveToggleOutside() {
-    toggleContainer.appendChild(toggleBtn);
-    toggleBtn.innerHTML = "⬇️ Покажи лентата";
-}
-
-toggleBtn.addEventListener("click", () => {
-    if (topbar.style.display === "none") {
-        topbar.style.display = "flex";
-        moveToggleInside();
-    } else {
-        topbar.style.display = "none";
-        moveToggleOutside();
-    }
+        if (topbar.classList.contains("hidden")) {
+            toggleBtn.innerHTML = "⬇️ Покажи лентата";
+        } else {
+            toggleBtn.innerHTML = "⬆️ Скрий лентата";
+        }
+    });
 });
-
-moveToggleInside();

@@ -8,12 +8,12 @@ let isCollapsed = false;
 darkModeBtn.addEventListener("click", function () {
     if (mode === "normal") {
         document.body.style.background = "#0d1117";
-        document.body.style.color = "#e0f7fa";
+        document.body.style.color = "#c9d1d9";
         darkModeBtn.textContent = "☀️ Светъл режим";
         mode = "dark";
     } else if (mode === "dark") {
-        document.body.style.background = "#f0f0f0";
-        document.body.style.color = "#1e1e1e";
+        document.body.style.background = "#eeeeee";
+        document.body.style.color = "#222222";
         darkModeBtn.textContent = "🔁 Нормален режим";
         mode = "light";
     } else {
